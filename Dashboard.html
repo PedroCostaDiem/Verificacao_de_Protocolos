@@ -169,90 +169,113 @@
 <body>
 <div class="button-container">
     <button class="panel-button" onclick="location.href='index.html'">Painel pessoal 🏠</button>
-         <button class="customize-button" id="customizeButton">Personalize seu nome</button>
+    <button class="customize-button" id="customizeButton">Personalize seu nome</button>
+</div>
+<h1 id="title">Verificação de Protocolos - <span id="customName">🤖</span></h1>
+<div id="example"></div>
+
+<!-- Modal para personalização -->
+<div class="modal" id="customizeModal">
+    <div class="modal-content">
+        <h2>Personalize seu nome</h2>
+        <label for="nameInput">Nome:</label>
+        <input type="text" id="nameInput" placeholder="Digite seu nome">
+        <label for="colorInput">Cor do texto:</label>
+        <input type="color" id="colorInput">
+        <label for="fontSelect">Fonte:</label>
+        <select id="fontSelect">
+            <option value="Roboto">Roboto</option>
+            <option value="Arial">Arial</option>
+            <option value="Courier New">Courier New</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Times New Roman">Times New Roman</option>
+        </select>
+        <label>Escolha um emoji:</label>
+        <emoji-picker></emoji-picker>
+        <button id="applyButton">Aplicar</button>
+        <button class="close" id="closeButton">Fechar</button>
     </div>
-    <h1 id="title">Verificação de Protocolos - <span id="customName">🤖</span></h1>
-    <div id="example"></div>
+</div>
 
-    <!-- Modal para personalização -->
-    <div class="modal" id="customizeModal">
-        <div class="modal-content">
-            <h2>Personalize seu nome</h2>
-            <label for="nameInput">Nome:</label>
-            <input type="text" id="nameInput" placeholder="Digite seu nome">
-            <label for="colorInput">Cor do texto:</label>
-            <input type="color" id="colorInput">
-            <label for="fontSelect">Fonte:</label>
-            <select id="fontSelect">
-                <option value="Roboto">Roboto</option>
-                <option value="Arial">Arial</option>
-                <option value="Courier New">Courier New</option>
-                <option value="Georgia">Georgia</option>
-                <option value="Times New Roman">Times New Roman</option>
-            </select>
-            <label>Escolha um emoji:</label>
-            <emoji-picker></emoji-picker>
-            <button id="applyButton">Aplicar</button>
-            <button class="close" id="closeButton">Fechar</button>
-        </div>
-    </div>
+<script>
+    // Função para carregar as personalizações do LocalStorage
+    function loadCustomizations() {
+        var name = localStorage.getItem('customName') || '';
+        var color = localStorage.getItem('customColor') || '#000000';
+        var font = localStorage.getItem('customFont') || 'Roboto';
+        var emoji = localStorage.getItem('customEmoji') || '🤖';
 
-    <script>
-        // Definindo os nomes das colunas, removendo "Outros"
-        var columns = ['Data', 'Hora', 'Submotivo', 'Prot.Gerado', 'Marcou Visita?', 'Atendente', 'Verificador', 'Status'];
+        var customNameElement = document.getElementById('customName');
+        customNameElement.textContent = `${name} ${emoji}`;
+        customNameElement.style.color = color;
+        customNameElement.style.fontFamily = font;
+    }
 
-        // Gerando 1000 linhas vazias, removendo a última coluna
-        var data = [];
-        for (var i = 0; i < 1000; i++) {
-            data.push(['', '', '', '', '', '', '', '']); // Linhas vazias
-        }
+    // Função para aplicar as personalizações e salvar no LocalStorage
+    function applyCustomizations() {
+        var name = document.getElementById('nameInput').value;
+        var color = document.getElementById('colorInput').value;
+        var font = document.getElementById('fontSelect').value;
+        var emojiPicker = document.querySelector('emoji-picker');
+        var emoji = emojiPicker.emoji?.native || '🤖';
 
-        var container = document.getElementById('example');
-        var hot = new Handsontable(container, {
-            data: data,
-            rowHeaders: true,
-            colHeaders: columns,
-            licenseKey: 'non-commercial-and-evaluation',
-            width: '100%',
-            height: 600,
-            stretchH: 'all',
-            columns: [
-                { type: 'date', dateFormat: 'YYYY-MM-DD', correctFormat: true, renderer: Handsontable.renderers.TextRenderer }, // Data
-                { type: 'time', timeFormat: 'HH:mm', renderer: Handsontable.renderers.TextRenderer }, // Hora
-                { type: 'text', renderer: Handsontable.renderers.TextRenderer }, // Texto
-                { type: 'text', renderer: Handsontable.renderers.TextRenderer }, // Texto
-                { type: 'dropdown', source: ['Sim', 'Não'], renderer: Handsontable.renderers.TextRenderer }, // Dropdown para "Marcou Visita?"
-                { type: 'text', renderer: Handsontable.renderers.TextRenderer }, // Texto
-                { type: 'text', renderer: Handsontable.renderers.TextRenderer }, // Texto
-                { type: 'text', renderer: Handsontable.renderers.TextRenderer }  // Texto
-            ]
-        });
+        var customNameElement = document.getElementById('customName');
+        customNameElement.textContent = `${name} ${emoji}`;
+        customNameElement.style.color = color;
+        customNameElement.style.fontFamily = font;
 
-        // Abrir o modal de personalização
-        document.getElementById('customizeButton').addEventListener('click', function() {
-            document.getElementById('customizeModal').style.display = 'flex';
-        });
+        // Salvar personalizações no LocalStorage
+        localStorage.setItem('customName', name);
+        localStorage.setItem('customColor', color);
+        localStorage.setItem('customFont', font);
+        localStorage.setItem('customEmoji', emoji);
 
-        // Fechar o modal
-        document.getElementById('closeButton').addEventListener('click', function() {
-            document.getElementById('customizeModal').style.display = 'none';
-        });
+        document.getElementById('customizeModal').style.display = 'none';
+    }
 
-        // Aplicar as personalizações
-        document.getElementById('applyButton').addEventListener('click', function() {
-            var name = document.getElementById('nameInput').value;
-            var color = document.getElementById('colorInput').value;
-            var font = document.getElementById('fontSelect').value;
-            var emojiPicker = document.querySelector('emoji-picker');
-            var emoji = emojiPicker.emoji?.native || '🤖';
-            
-            var customNameElement = document.getElementById('customName');
-            customNameElement.textContent = `${name} ${emoji}`;
-            customNameElement.style.color = color;
-            customNameElement.style.fontFamily = font;
-            
-            document.getElementById('customizeModal').style.display = 'none';
-        });
-    </script>
+    // Inicializar a planilha Handsontable
+    var columns = ['Data', 'Hora', 'Submotivo', 'Prot.Gerado', 'Marcou Visita?', 'Atendente', 'Verificador', 'Status'];
+    var data = [];
+    for (var i = 0; i < 1000; i++) {
+        data.push(['', '', '', '', '', '', '', '']); // Linhas vazias
+    }
+
+    var container = document.getElementById('example');
+    var hot = new Handsontable(container, {
+        data: data,
+        rowHeaders: true,
+        colHeaders: columns,
+        licenseKey: 'non-commercial-and-evaluation',
+        width: '100%',
+        height: 600,
+        stretchH: 'all',
+        columns: [
+            { type: 'date', dateFormat: 'YYYY-MM-DD', correctFormat: true, renderer: Handsontable.renderers.TextRenderer },
+            { type: 'time', timeFormat: 'HH:mm', renderer: Handsontable.renderers.TextRenderer },
+            { type: 'text', renderer: Handsontable.renderers.TextRenderer },
+            { type: 'text', renderer: Handsontable.renderers.TextRenderer },
+            { type: 'dropdown', source: ['Sim', 'Não'], renderer: Handsontable.renderers.TextRenderer },
+            { type: 'text', renderer: Handsontable.renderers.TextRenderer },
+            { type: 'text', renderer: Handsontable.renderers.TextRenderer },
+            { type: 'text', renderer: Handsontable.renderers.TextRenderer }
+        ]
+    });
+
+    // Carregar personalizações ao iniciar a página
+    loadCustomizations();
+
+    // Abrir o modal de personalização
+    document.getElementById('customizeButton').addEventListener('click', function() {
+        document.getElementById('customizeModal').style.display = 'flex';
+    });
+
+    // Fechar o modal
+    document.getElementById('closeButton').addEventListener('click', function() {
+        document.getElementById('customizeModal').style.display = 'none';
+    });
+
+    // Aplicar as personalizações
+    document.getElementById('applyButton').addEventListener('click', applyCustomizations);
+</script>
 </body>
 </html>
