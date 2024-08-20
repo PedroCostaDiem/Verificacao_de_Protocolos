@@ -156,14 +156,103 @@
         .modal-content button:hover {
             background-color: #0056b3;
         }
+
+        .modal-content button.close:hover {
+            background-color: #c82333;
+        }
+
+        .emoji-picker-container {
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
     <div class="button-container">
-        <a href="index.html" class="btn panel-button">Painel Pessoal</a>
-        <!-- Você pode adicionar outros botões aqui -->
+    <button class="panel-button" onclick="location.href='index.html'">Painel Pessoal</button>
+     <button class="customize-button" id="customizeButton">Personalize seu nome</button>
     </div>
-    <h1>Dashboard</h1>
-    <!-- Adicione o conteúdo da página aqui -->
+    <h1 id="title">Verificação de Protocolos - <span id="customName">🤖</span></h1>
+    <div id="example"></div>
+
+    <!-- Modal para personalização -->
+    <div class="modal" id="customizeModal">
+        <div class="modal-content">
+            <h2>Personalize seu nome</h2>
+            <label for="nameInput">Nome:</label>
+            <input type="text" id="nameInput" placeholder="Digite seu nome">
+            <label for="colorInput">Cor do texto:</label>
+            <input type="color" id="colorInput">
+            <label for="fontSelect">Fonte:</label>
+            <select id="fontSelect">
+                <option value="Roboto">Roboto</option>
+                <option value="Arial">Arial</option>
+                <option value="Courier New">Courier New</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Times New Roman">Times New Roman</option>
+            </select>
+            <label>Escolha um emoji:</label>
+            <emoji-picker></emoji-picker>
+            <button id="applyButton">Aplicar</button>
+            <button class="close" id="closeButton">Fechar</button>
+        </div>
+    </div>
+
+    <script>
+        // Definindo os nomes das colunas, removendo "Outros"
+        var columns = ['Data', 'Hora', 'Submotivo', 'Prot.Gerado', 'Marcou Visita?', 'Atendente', 'Verificador', 'Status'];
+
+        // Gerando 1000 linhas vazias, removendo a última coluna
+        var data = [];
+        for (var i = 0; i < 1000; i++) {
+            data.push(['', '', '', '', '', '', '', '']); // Linhas vazias
+        }
+
+        var container = document.getElementById('example');
+        var hot = new Handsontable(container, {
+            data: data,
+            rowHeaders: true,
+            colHeaders: columns,
+            licenseKey: 'non-commercial-and-evaluation',
+            width: '100%',
+            height: 600,
+            stretchH: 'all',
+            columns: [
+                { type: 'date', dateFormat: 'YYYY-MM-DD', correctFormat: true, renderer: Handsontable.renderers.TextRenderer }, // Data
+                { type: 'time', timeFormat: 'HH:mm', renderer: Handsontable.renderers.TextRenderer }, // Hora
+                { type: 'text', renderer: Handsontable.renderers.TextRenderer }, // Texto
+                { type: 'text', renderer: Handsontable.renderers.TextRenderer }, // Texto
+                { type: 'dropdown', source: ['Sim', 'Não'], renderer: Handsontable.renderers.TextRenderer }, // Dropdown para "Marcou Visita?"
+                { type: 'text', renderer: Handsontable.renderers.TextRenderer }, // Texto
+                { type: 'text', renderer: Handsontable.renderers.TextRenderer }, // Texto
+                { type: 'text', renderer: Handsontable.renderers.TextRenderer }  // Texto
+            ]
+        });
+
+        // Abrir o modal de personalização
+        document.getElementById('customizeButton').addEventListener('click', function() {
+            document.getElementById('customizeModal').style.display = 'flex';
+        });
+
+        // Fechar o modal
+        document.getElementById('closeButton').addEventListener('click', function() {
+            document.getElementById('customizeModal').style.display = 'none';
+        });
+
+        // Aplicar as personalizações
+        document.getElementById('applyButton').addEventListener('click', function() {
+            var name = document.getElementById('nameInput').value;
+            var color = document.getElementById('colorInput').value;
+            var font = document.getElementById('fontSelect').value;
+            var emojiPicker = document.querySelector('emoji-picker');
+            var emoji = emojiPicker.emoji?.native || '🤖';
+            
+            var customNameElement = document.getElementById('customName');
+            customNameElement.textContent = ${name} ${emoji};
+            customNameElement.style.color = color;
+            customNameElement.style.fontFamily = font;
+            
+            document.getElementById('customizeModal').style.display = 'none';
+        });
+    </script>
 </body>
 </html>
