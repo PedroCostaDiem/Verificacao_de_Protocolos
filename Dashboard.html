@@ -167,9 +167,9 @@
     </style>
 </head>
 <body>
-    <div class="button-container">
-    <button class="panel-button" onclick="location.href='index.html'">Painel Pessoal</button>
-     <button class="customize-button" id="customizeButton">Personalize seu nome</button>
+<div class="button-container">
+    <button class="panel-button" onclick="location.href='index.html'">Painel pessoal 🏠</button>
+         <button class="customize-button" id="customizeButton">Personalize seu nome</button>
     </div>
     <h1 id="title">Verificação de Protocolos - <span id="customName">🤖</span></h1>
     <div id="example"></div>
@@ -247,7 +247,7 @@
             var emoji = emojiPicker.emoji?.native || '🤖';
             
             var customNameElement = document.getElementById('customName');
-            customNameElement.textContent = ${name} ${emoji};
+            customNameElement.textContent = `${name} ${emoji}`;
             customNameElement.style.color = color;
             customNameElement.style.fontFamily = font;
             
