@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificação de Protocolos</title>
+    <!-- Importando a biblioteca Handsontable -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+    <!-- Importando a fonte do Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap">
+    <!-- Importando a biblioteca de emojis -->
+    <link rel="stylesheet" href="https://unpkg.com/emoji-picker-element@latest/dist/emoji-picker-element.css">
+    <script src="https://unpkg.com/emoji-picker-element@latest/dist/emoji-picker-element.js" defer></script>
+    <style>
+        /* Estilos personalizados */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center; /* Centraliza o título */
+            margin: 0;
+            padding: 0;
+            position: relative; /* Para o posicionamento absoluto dos botões */
+        }
+
+        h1 {
+            font-family: 'Roboto', sans-serif; /* Fonte bonita para o título */
+            color: #003366; /* Cor azul escuro para o título */
+            font-size: 24px; /* Tamanho da fonte */
+            margin: 20px 0; /* Espaçamento acima e abaixo do título */
+        }
+
+        .handsontable {
+            background-color: #ffffff; /* Fundo branco para a planilha */
+            margin-top: 40px; /* Espaçamento acima da planilha */
+        }
+
+        .handsontable thead th {
+            background-color: #003366; /* Azul escuro para o cabeçalho */
+            color: #ffffff; /* Texto branco para o cabeçalho */
+            font-weight: bold; /* Negrito para o texto do cabeçalho */
+        }
+
+        .handsontable td, .handsontable th {
+            border: 1px solid #ddd;
+        }
+
+        .handsontable .htCore {
+            background-color: #ffffff; /* Fundo branco para o conteúdo */
+        }
+
+        /* Estilo dos botões */
+        .button-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px; /* Espaçamento entre os botões */
+        }
+
+        .button-container button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .panel-button {
+            background-color: #007bff;
+        }
+
+        .customize-button {
+            background-color: #28a745;
+        }
+
+        .panel-button:hover {
+            background-color: #0056b3;
+        }
+
+        .customize-button:hover {
+            background-color: #218838;
+        }
+
+        /* Estilos para o modal */
+        .modal {
+            display: none; /* Oculta o modal por padrão */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+            width: 500px;
+            max-width: 90%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+        }
+
+        .modal-content label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        .modal-content input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .modal-content input[type="color"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .modal-content select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .modal-content button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .modal-content button.close {
+            background-color: #dc3545;
+        }
+
+        .modal-content button:hover {
+            background-color: #0056b3;
+        }
+
+        .modal-content button.close:hover {
+            background-color: #c82333;
+        }
+
+        .emoji-picker-container {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="button-container">
+        <button class="panel-button">Painel pessoal 🏠</button>
+        <button class="customize-button" id="customizeButton">Personalize seu nome</button>
+    </div>
+    <h1 id="title">Verificação de Protocolos - <span id="customName">🤖</span></h1>
+    <div id="example"></div>
+
+    <!-- Modal para personalização -->
+    <div class="modal" id="customizeModal">
+        <div class="modal-content">
+            <h2>Personalize seu nome</h2>
+            <label for="nameInput">Nome:</label>
+            <input type="text" id="nameInput" placeholder="Digite seu nome">
+            <label for="colorInput">Cor do texto:</label>
+            <input type="color" id="colorInput">
+            <label for="fontSelect">Fonte:</label>
+            <select id="fontSelect">
+                <option value="Roboto">Roboto</option>
+                <option value="Arial">Arial</option>
+                <option value="Courier New">Courier New</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Times New Roman">Times New Roman</option>
+            </select>
+            <label>Escolha um emoji:</label>
+            <emoji-picker></emoji-picker>
+            <button id="applyButton">Aplicar</button>
+            <button class="close" id="closeButton">Fechar</button>
+        </div>
+    </div>
+
+    <script>
+        // Definindo os nomes das colunas, removendo "Outros"
+        var columns = ['Data', 'Hora', 'Submotivo', 'Prot.Gerado', 'Marcou Visita?', 'Atendente', 'Verificador', 'Status'];
+
+        // Gerando 1000 linhas vazias, removendo a última coluna
+        var data = [];
+        for (var i = 0; i < 1000; i++) {
+            data.push(['', '', '', '', '', '', '', '']); // Linhas vazias
+        }
+
+        var container = document.getElementById('example');
+        var hot = new Handsontable(container, {
+            data: data,
+            rowHeaders: true,
+            colHeaders: columns,
+            licenseKey: 'non-commercial-and-evaluation',
+            width: '100%',
+            height: 600,
+            stretchH: 'all',
+            columns: [
+                { type: 'date', dateFormat: 'YYYY-MM-DD', correctFormat: true, renderer: Handsontable.renderers.TextRenderer }, // Data
+                { type: 'time', timeFormat: 'HH:mm', renderer: Handsontable.renderers.TextRenderer }, // Hora
+                { type: 'text', renderer: Handsontable.renderers.TextRenderer }, // Texto
+                { type: 'text', renderer: Handsontable.renderers.TextRenderer }, // Texto
+                { type: 'dropdown', source: ['Sim', 'Não'], renderer: Handsontable.renderers.TextRenderer }, // Dropdown para "Marcou Visita?"
+                { type: 'text', renderer: Handsontable.renderers.TextRenderer }, // Texto
+                { type: 'text', renderer: Handsontable.renderers.TextRenderer }, // Texto
+                { type: 'text', renderer: Handsontable.renderers.TextRenderer }  // Texto
+            ]
+        });
+
+        // Abrir o modal de personalização
+        document.getElementById('customizeButton').addEventListener('click', function() {
+            document.getElementById('customizeModal').style.display = 'flex';
+        });
+
+        // Fechar o modal
+        document.getElementById('closeButton').addEventListener('click', function() {
+            document.getElementById('customizeModal').style.display = 'none';
+        });
+
+        // Aplicar as personalizações
+        document.getElementById('applyButton').addEventListener('click', function() {
+            var name = document.getElementById('nameInput').value;
+            var color = document.getElementById('colorInput').value;
+            var font = document.getElementById('fontSelect').value;
+            var emojiPicker = document.querySelector('emoji-picker');
+            var emoji = emojiPicker.emoji?.native || '🤖';
+            
+            var customNameElement = document.getElementById('customName');
+            customNameElement.textContent = `${name} ${emoji}`;
+            customNameElement.style.color = color;
+            customNameElement.style.fontFamily = font;
+            
+            document.getElementById('customizeModal').style.display = 'none';
+        });
+    </script>
+</body>
+</html>
