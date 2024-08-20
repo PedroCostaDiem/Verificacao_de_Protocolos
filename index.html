@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planilha Online com 1000 Linhas</title>
+    <!-- Importando a biblioteca Handsontable -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+</head>
+<body>
+    <h1>Planilha Online com 1000 Linhas</h1>
+    <div id="example"></div>
+
+    <script>
+        // Definindo as colunas
+        var columns = ['Data', 'Hora', 'Submotivo', 'Prot.Gerado', 'Marcou Visita?', 'Atendente', 'Verificador', 'Status', 'Outros'];
+
+        // Gerando 1000 linhas vazias com 9 colunas
+        var data = [];
+        data.push(columns); // Cabeçalho da tabela
+        for (var i = 0; i < 1000; i++) {
+            data.push(['', '', '', '', '', '', '', '', '']); // Linhas vazias
+        }
+
+        var container = document.getElementById('example');
+        var hot = new Handsontable(container, {
+            data: data,
+            rowHeaders: true,
+            colHeaders: columns,
+            licenseKey: 'non-commercial-and-evaluation',
+            width: '100%',
+            height: 600,
+            stretchH: 'all',
+        });
+    </script>
+</body>
+</html>
+
